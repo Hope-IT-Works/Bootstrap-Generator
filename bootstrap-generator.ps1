@@ -1,4 +1,5 @@
-<# 
+<#
+
 .NAME
     Bootstrap Generator
 .SYNOPSIS
@@ -9,6 +10,8 @@
     ./bootstrap-generator.ps1
 .PARAMETER WithBootstrapIcons
     Add parameter to include Bootstrap Icons
+.PARAMETER WithTemplate
+    Add parameter to include a index.html template
 .PARAMETER DirectoryName
     Name for the assets directory
 .PARAMETER DestinationPath
@@ -21,6 +24,9 @@ Param
 [Parameter(HelpMessage="Add parameter to include Bootstrap Icons")]
     [switch]
     $WithBootstrapIcons,
+[Parameter(HelpMessage="Add parameter to include a index.html template")]
+    [switch]
+    $WithTemplate,
 [Parameter(HelpMessage="Name for the assets directory")]
     [string]
     $DirectoryName = "assets",
@@ -167,6 +173,20 @@ if($WithBootstrapIcons){
     Write-Host "Bootstrap Icons assets are now ready!"
 }
 
+if($WithTemplate){
+    if($WithBootstrapIcons){
+        Write-Host "Downloading the index_with-icons.html template to index.html"
+        Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/Hope-IT-Works/Bootstrap-Generator/main/index_with-icons.html" -OutFile (Join-Path -Path $BG_DownloadPath -ChildPath "index.html")
+    } else {
+        Write-Host "Downloading the index.html template to index.html"
+        Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/Hope-IT-Works/Bootstrap-Generator/main/index.html" -OutFile (Join-Path -Path $BG_DownloadPath -ChildPath "index.html")
+    }
+    Write-Host "The index.html template has been downloaded!"
+} else {
+    Write-Host "Skipping the index.html template download as the parameter -WithTemplate was not used"
+}
+
+Write-Host ""
 Write-Host "Bootstrap project initialization completed!"
 Write-Host "Bootstrap Version: $($Bootstrap_Release.tag_name)"
 if($WithBootstrapIcons){
